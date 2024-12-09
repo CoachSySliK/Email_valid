@@ -4,6 +4,8 @@
 using namespace std;
 
 bool email_dog(string email)
+// у меня же проверяется отсутствие @
+// а первая и последняя позиция проверяется, когда идет проверка длины имени или адреса
 {
 	int counter = 0;
 	for (int i = 0; i < email.length(); i++)
@@ -13,7 +15,7 @@ bool email_dog(string email)
 	}
 	if (counter != 1)
 	{
-		cout << "Ошибка!!!\nВ адресе должен быть один символ \'@\'\n";
+		cout << "Ошибка!!!\nВ email должен быть один символ \'@\'\n";
 		return false;
 	}
 	return true;
@@ -44,28 +46,16 @@ string email_host(string email, int dog)
 	return emailHost;
 }
 
-bool valid_values_name(string email)
+bool valid_values(string email, string valid)
+//хотел через указатель, но тогда не работает string.find() 
+//теперь будет одну ошибку выводить, и не понятно, ошибка в имени или адресе, мне кажется логичнее было бы делать отдельную функцию
+//если выводить разные ошибки, то надо вводить переменную, что конкретно сейчас проверяется в функции и проверять условие. как по мне проще две разные функции написать. 
 {
-	string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-.!#$&'*+-/=?^_`{|}~";
 	for (int i = 0; i < email.length(); i++)
 	{
 		if (valid.find(email[i]) == valid.npos)
 		{
-			cout << "Ошибка!!!\nНедопустимые символы в имени\n";
-			return false;
-		}
-	}
-	return true;
-}
-
-bool valid_values_host(string email)
-{
-	string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-.";
-	for (int i = 0; i < email.length(); i++)
-	{
-		if (valid.find(email[i]) == valid.npos)
-		{
-			cout << "Ошибка!!!\nНедопустимые символы в адресе\n";
+			cout << "Ошибка!!!\nНедопустимые символы в email\n";
 			return false;
 		}
 	}
@@ -120,6 +110,13 @@ int main(void)
 			}
 			if (!emailRight)
 				continue;
+				
+			string validName = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-.!#$&'*+-/=?^_`{|}~";
+			string valid = validName;
+			
+			emailRight = valid_values(emailName, valid);
+			if (!emailRight)
+				continue;
 
 			string emailHost = email_host(email, dog);
 			if (emailHost.length() < 1 || emailHost.length() > 63)
@@ -129,12 +126,12 @@ int main(void)
 			}
 			if (!emailRight)
 				continue;
-
-			emailRight = valid_values_name(emailName);
-			if (!emailRight)
-				continue;
-
-			emailRight = valid_values_host(emailHost);
+			
+			string validHost = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-.";
+			
+			valid = validHost;
+			
+			emailRight = valid_values(emailHost, valid);
 			if (!emailRight)
 				continue;
 
